@@ -1,0 +1,62 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+% Update this information to reflect yourself
+\title{Assignment 1: 3SUM}
+\author{Laurenz Aisenpreis}
+\date{2021-09-15}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+The underlying problem of this report is the 3SUM problem, which is defined as follows: Given an array of \emph{n} integers, are there elements \emph{a, b, c} in the array such that \emph{a + b + c  = 0}?
+In this report, we compare the implementations of two different algorithms that produce the correct result for the 3SUM problem. \linebreak
+The first implementation is an intuitive solution, which tests every combination of the three elements of the input list \emph{a, b, c} with a runtime of \emph{O(n$^3$)}. The second implementation initially stores each number in a hash map and checks whether the element \emph{c} is in the hash table, where \emph{c = -a-b}. The second implementation has a runtime of \emph{O(n$^2$)}.
+
+
+\section{Implementation}
+
+The algorithms were implemented in Python, following the proposed examples in the \emph{instructions} document. The implementations only used sequential code. \newline
+We have included several test cases to ensure the correctness of the algorithms. The test cases were constructed by using a mix of \emph{if-statements} with printed results and \emph{assert statements}. The test cases included testing for correct results for different inputs such as inputs of varying sizes, or inputs with repeating numbers. Additionally, we tested for cases with inputs having less than three integers in the list and with inputs that could produce multiple results. Though, it has to be mentioned, that the implemented algorithms returned after finding a first tuple and did not return all potential solutions to the problem. \newline
+We also included a test case with an incorrect implementation of the hash map algorithm. This implementation lacked the verification, that distinct elements of the input list were only allowed to be used once. For instance, the algorithm would return the incorrect result \emph{(-2,4,-2)} when given the input \emph{[-2,4,9]}.
+
+
+\section{Experiments}
+
+We conducted an experiment to evaluate the different implementations. To that end, we generated different datasets with different lengths, all containing only positive integers. As a result, the algorithms would not return any triples that sum to zero, allowing for a robust and comparable evaluation of the results. \newline
+The experiments were conducted on a Microsoft Surface Laptop 3 with a 4-core Intel i7 at 1.5 GHz, with 16GB of RAM. \newline
+Tables 1 and 2 list the results of the experiements. Both tables show the average runtimes in seconds and the standard deviations for different input sizes \emph{n}.
+
+\begin{table}[h]
+  \begin{center}
+  \caption{This table depicts the average runtimes and standard deviations for different input sizes \emph{n} of the cubic algorithm in seconds}
+  \label{tbl:resultscubic}
+  \input{threesum_cubic_tabular.tex}
+  \end{center}
+\end{table}
+
+\begin{table}[h]
+  \begin{center}
+  \caption{This table depicts the average runtimes and standard deviations for different input sizes \emph{n} of the hash map algorithm in seconds}
+  \label{tbl:resultshashmap}
+  \input{threesum_hashmap_tabular.tex}
+  \end{center}
+\end{table}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=\textwidth]{plot_cubic_vs_hashmap.pdf}
+    \caption{Comparison of runtimes of the cubic and hash map algorithm for different input sizes}
+    \label{fig:runtimes}
+  \end{center}
+\end{figure}
+
+\clearpage
+
+\section{Conclusion}
+The results of the experiment support the intuition that the cubic algorithm takes much longer to compute than the hash map implementation. In fact, the running times differed for several orders of magnitude with increased input sizes.
+
+\end{document}
