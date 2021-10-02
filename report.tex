@@ -3,32 +3,43 @@
 \usepackage{graphicx}
 
 % Update this information to reflect yourself
-\title{Assignment 1: 3SUM}
+\title{Assignment 1: Data Pipelines}
 \author{Laurenz Aisenpreis}
-\date{2021-09-15}
+\date{2021-09-29}
 
 \begin{document}
 \maketitle
 
 \section{Introduction}
 
-The underlying problem of this report is the 3SUM problem, which is defined as follows: Given an array of \emph{n} integers, are there elements \emph{a, b, c} in the array such that \emph{a + b + c  = 0}?
-In this report, we compare the implementations of two different algorithms that produce the correct result for the 3SUM problem. \linebreak
-The first implementation is an intuitive solution, which tests every combination of the three elements of the input list \emph{a, b, c} with a runtime of \emph{O(n$^3$)}. The second implementation initially stores each number in a hash map and checks whether the element \emph{c} is in the hash table, where \emph{c = -a-b}. The second implementation has a runtime of \emph{O(n$^2$)}.
+The following report discusses my implementation of a data pipeline to predict wind power production in Orkney. The data pipeline combines data from two different data sources, namely wind generation data and weather forecast data including the wind speed and direction.  
+The application has been implemented by using the libraries \emph{sklearn} and \emph{pandas}.
+
+\section{Pre-Pipeline Data Processing}
+
+Some crucial preprocessing steps were performed before parsing the data into the pipeline. Most importantly, the timestamps of the two data sources had to be aligned. I took the decision, to query the wind generation data grouped by a time period of three hours and summed up the total wind power generated within this time frame.
+Following this, the two data sources were merged and the columns \emph{Lead hours} and \emph{Source time} were dropped because they were not taken into consideration for the following data analysis. The main attributes for my analysis were therefore \emph{Speed} and \emph{Direction} to predict the \emph{Total} of generated wind. How those attributes were prepared is described in the next section.
+
+\section{Data Pipeline}
+
+In order to prepare the data set and conduct the prediction, both \emph{ColumnTransformer} and \emph{Pipeline} were used. Since the features of my model were a mix of numerical and categorical data, I decided to treat them differently. Within a \emph{ColumnTransformer}, first the missing values of the numerical feature \emph{Speed} were replaced by the median and scaled using the \emph{StandardScaler}. Secondly, the categorical feature \emph{Direction} was one hot encoded, to be able to interpret this attribute as a numerical value. \newline
+Finally, my pipeline incorporated the transformations of the \emph{ColumnTransformer} and further transformed this data into polynomial combinations using \emph{PolynomialFeatures} to account for the non-linear nature of the input data. As a last step, I included the predictor of my choice, and analyzed how the linear regression and k-nearest neighbor regressor models perform on the data set.
+
+\section{Prediction Models}
+
+The linear regression model achieved a score of \emph{0.73}. Especially the inclusion of polynomial transformation led to an relative increase of \emph{12.3} percent of accuracy compared to a previous score of \emph{0.65}. This can be explained by a better fit of the polynomially transformed model due to the non-linear relationship of the underlying data. The picture below depicts the regression line of the fitted model on test data.
 
 
-\section{Implementation}
-
-The algorithms were implemented in Python, following the proposed examples in the \emph{instructions} document. The implementations only used sequential code. \newline
-We have included several test cases to ensure the correctness of the algorithms. The test cases were constructed by using a mix of \emph{if-statements} with printed results and \emph{assert statements}. The test cases included testing for correct results for different inputs such as inputs of varying sizes, or inputs with repeating numbers. Additionally, we tested for cases with inputs having less than three integers in the list and with inputs that could produce multiple results. Though, it has to be mentioned, that the implemented algorithms returned after finding a first tuple and did not return all potential solutions to the problem. \newline
-We also included a test case with an incorrect implementation of the hash map algorithm. This implementation lacked the verification, that distinct elements of the input list were only allowed to be used once. For instance, the algorithm would return the incorrect result \emph{(-2,4,-2)} when given the input \emph{[-2,4,9]}.
 
 
-\section{Experiments}
+\section{Evaluation}
 
-We conducted an experiment to evaluate the different implementations. To that end, we generated different datasets with different lengths, all containing only positive integers. As a result, the algorithms would not return any triples that sum to zero, allowing for a robust and comparable evaluation of the results. \newline
-The experiments were conducted on a Microsoft Surface Laptop 3 with a 4-core Intel i7 at 1.5 GHz, with 16GB of RAM. \newline
-Tables 1 and 2 list the results of the experiements. Both tables show the average runtimes in seconds and the standard deviations for different input sizes \emph{n}.
+We conducted an experiment to evaluate the different implementations. To that end, we generated different datasets with different lengths, all containing only positive integers. As a result, the algorithms would not return any triples that sum to zero, allowing for a robust and comparable
+
+\section{Potential Improvements}
+
+We conducted an experiment to evaluate the different implementations. To that end, we generated different datasets with different lengths, all containing only positive integers. As a result, the algorithms would not return any triples that sum to zero, allowing for a robust and comparable
+
 
 \begin{table}[h]
   \begin{center}
@@ -37,22 +48,6 @@ Tables 1 and 2 list the results of the experiements. Both tables show the averag
   %\input{threesum_cubic_tabular.tex}
   \end{center}
 \end{table}
-
-\begin{table}[h]
-  \begin{center}
-  \caption{This table depicts the average runtimes and standard deviations for different input sizes \emph{n} of the hash map algorithm in seconds}
-  \label{tbl:resultshashmap}
-  %\input{threesum_hashmap_tabular.tex}
-  \end{center}
-\end{table}
-
-\begin{figure}[h]
-  \begin{center}
-    %\includegraphics[width=\textwidth]{plot_cubic_vs_hashmap.pdf}
-    \caption{Comparison of runtimes of the cubic and hash map algorithm for different input sizes}
-    \label{fig:runtimes}
-  \end{center}
-\end{figure}
 
 \clearpage
 
